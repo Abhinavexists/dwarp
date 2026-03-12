@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dwarp"
-version = "0.1.7"
+version = "0.1.8"
 description = "Terminal assistant built as an open source minimal alternative to Warp"
 authors = [{name = "Abhinav", email = "abhinavkumarsingh2023@gmail.com"}]
 readme = "README.md"
@@ -27,6 +27,7 @@ dependencies = [
     "python-dotenv==1.1.1",
     "google-genai==1.31.0",
     "ruff>=0.15.5",
+    "build>=1.4.0",
 ]
 
 [project.scripts]
