@@ -27,7 +27,7 @@ jobs:
 
       - name: Clean old build artifacts
         run: |
-          rm -rf dist build *.egg-info ai_terminal.egg-info ai_terminal_cli.egg-info
+          rm -rf dist build *.egg-info dwarp.egg-info
 
       - name: Build package
         run: python -m build

@@ -1,3 +1,4 @@
+import argparse
 import os
 import re
 
@@ -5,6 +6,7 @@ from rich import print
 from rich.console import Console
 from rich.markdown import Markdown
 
+from terminal import __version__
 from terminal.core.executor import CommandResponse, GeneralResponse, run_command
 from terminal.core.agent import process_request
 from terminal.safety import check_command_safety
@@ -15,13 +17,21 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.completion import FuzzyWordCompleter
 
+
+def parse_args():
+    parser = argparse.ArgumentParser(
+        prog="dwarp",
+        description="AI-powered terminal assistant",
+    )
+    parser.add_argument("--version", action="version", version=f"dwarp {__version__}")
+    parser.add_argument("--config", metavar="PATH", help="path to config file")
+    parser.add_argument("--model", metavar="NAME", help="override model from config")
+    parser.add_argument("--verbose", action="store_true", help="enable debug logging")
+    return parser.parse_args()
+
 console = Console()
 
 HISTORY_FILE = os.path.expanduser("~/.dwarp_history")
-_OLD_HISTORY_FILE = os.path.expanduser("~/.terminal_history") # Legacy history file from older versions
-
-if os.path.exists(_OLD_HISTORY_FILE) and not os.path.exists(HISTORY_FILE):
-    os.rename(_OLD_HISTORY_FILE, HISTORY_FILE)
 
 
 def load_previous_commands():
@@ -128,6 +138,14 @@ def handle_general_response(result: GeneralResponse):
 
 
 def main():
+    args = parse_args()
+
+    from terminal.utils import config as config_module
+    if args.config:
+        config_module.config = config_module.Config(config_file=args.config)
+    if args.model:
+        config_module.config.model_override = args.model
+
     print("[bold green]dwarp[/bold green]")
     print("Type your request (type 'exit' to quit)")
     print("Examples: 'install docker', 'what is Python?', 'write a hello world script'\n")
