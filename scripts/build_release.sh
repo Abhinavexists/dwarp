@@ -19,7 +19,7 @@ if command -v python &>/dev/null; then
 fi
 
 echo "==> Building PyInstaller binary"
-pyinstaller --clean --noconfirm "$ROOT_DIR/ai-terminal.spec"
+pyinstaller --clean --noconfirm "$ROOT_DIR/dwarp.spec"
 
 echo "==> Preparing release directory"
 RELEASE_DIR="$DIST_DIR/${OUT_NAME}-linux"
@@ -27,14 +27,10 @@ rm -rf "$RELEASE_DIR"
 mkdir -p "$RELEASE_DIR"
 
 # Move binary and include helper files
-if [[ -f "$DIST_DIR/ai-terminal" ]]; then
-  install -m 755 "$DIST_DIR/ai-terminal" "$RELEASE_DIR/$OUT_NAME"
-elif [[ -f "$DIST_DIR/ai-terminal/ai-terminal" ]]; then
-  install -m 755 "$DIST_DIR/ai-terminal/ai-terminal" "$RELEASE_DIR/$OUT_NAME"
-elif [[ -f "$DIST_DIR/ai-terminal-cli" ]]; then
-  install -m 755 "$DIST_DIR/ai-terminal-cli" "$RELEASE_DIR/$OUT_NAME"
-elif [[ -f "$DIST_DIR/ai-terminal-cli/ai-terminal-cli" ]]; then
-  install -m 755 "$DIST_DIR/ai-terminal-cli/ai-terminal-cli" "$RELEASE_DIR/$OUT_NAME"
+if [[ -f "$DIST_DIR/dwarp" ]]; then
+  install -m 755 "$DIST_DIR/dwarp" "$RELEASE_DIR/$OUT_NAME"
+elif [[ -f "$DIST_DIR/dwarp/dwarp" ]]; then
+  install -m 755 "$DIST_DIR/dwarp/dwarp" "$RELEASE_DIR/$OUT_NAME"
 else
   echo "ERROR: Built binary not found. Expected PyInstaller dist outputs under $DIST_DIR."
   ls -l "$DIST_DIR" || true

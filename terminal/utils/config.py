@@ -1,12 +1,14 @@
 import os
 import json
+import shutil
 from pathlib import Path
 from typing import Dict, Any
 
 class Config:
-    
+
     def __init__(self):
-        self.config_file = Path.home() / ".ai_terminal_config.json"
+        self.config_file = Path.home() / ".dwarp_config.json"
+        self._migrate_config()
         self.default_config = {
             "gemini_api_key": None,
             "model": "gemini-2.5-flash",
@@ -20,6 +22,11 @@ class Config:
             }
         }
     
+    def _migrate_config(self):
+        old_config = Path.home() / ".ai_terminal_config.json"
+        if old_config.exists() and not self.config_file.exists():
+            shutil.move(str(old_config), str(self.config_file))
+
     def load_config(self) -> Dict[str, Any]:
         if self.config_file.exists():
             try:

@@ -69,7 +69,7 @@ class CommandSafety:
 
         for pattern in self.CRITICAL_PATTERNS:
             if re.search(pattern, command, re.IGNORECASE):
-                warning.append(f"CRITICAL: This command can cause irreversible system damage!")
+                warning.append("CRITICAL: This command can cause irreversible system damage!")
                 return SafetyResult(
                     risk_level=RiskLevel.CRITICAL,
                     warning=warning,
@@ -79,7 +79,7 @@ class CommandSafety:
 
         for pattern in self.HIGH_RISK_PATTERNS:
             if re.search(pattern, command, re.IGNORECASE):
-                warning.append(f"HIGH RISK: This command can cause significant damage or data loss")
+                warning.append("HIGH RISK: This command can cause significant damage or data loss")
                 if "rm -rf" in command:
                     suggestions.append("Consider using 'trash' or 'mv to backup' instead")
                 if "sudo" in command:
@@ -93,7 +93,7 @@ class CommandSafety:
 
         for pattern in self.MEDIUM_RISK_PATTERNS:
             if re.search(pattern, command, re.IGNORECASE):
-                warning.append(f"MEDIUM RISK: This command can cause significant changes")
+                warning.append("MEDIUM RISK: This command can cause significant changes")
                 return SafetyResult(
                     risk_level=RiskLevel.MEDIUM,
                     warning=warning,
@@ -103,7 +103,7 @@ class CommandSafety:
 
         for pattern in self.LOW_RISK_PATTERNS:
             if re.search(pattern, command, re.IGNORECASE):
-                warning.append(f"LOW RISK: This command may cause data loss or changes")
+                warning.append("LOW RISK: This command may cause data loss or changes")
                 return SafetyResult(
                     risk_level=RiskLevel.LOW,
                     warning=warning,
@@ -149,18 +149,18 @@ def check_command_safety(cmd: str) -> bool:
     if safety_result.blocked and safety_result.risk_level == RiskLevel.CRITICAL:
         print(f"[red]{safety_result.warning[0]}[/red]")
         if safety_result.suggestions:
-            print(f"[yellow]Suggestions:[/yellow]")
+            print("[yellow]Suggestions:[/yellow]")
             for suggestion in safety_result.suggestions:
                 print(f"  • {suggestion}")
         return False
     
     if safety_result.warning:
-        print(f"\n[bold yellow]Safety Warning:[/bold yellow]")
+        print("\n[bold yellow]Safety Warning:[/bold yellow]")
         for warning in safety_result.warning:
             print(f"[yellow]{warning}[/yellow]")
         
         if safety_result.suggestions:
-            print(f"[cyan]Suggestions:[/cyan]")
+            print("[cyan]Suggestions:[/cyan]")
             for suggestion in safety_result.suggestions:
                 print(f"  • {suggestion}")
     

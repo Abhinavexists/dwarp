@@ -1,6 +1,10 @@
 import os
 import re
 
+from rich import print
+from rich.console import Console
+from rich.markdown import Markdown
+
 from terminal.core.executor import CommandResponse, GeneralResponse, run_command
 from terminal.core.agent import process_request
 from terminal.safety import check_command_safety
@@ -11,13 +15,13 @@ from prompt_toolkit import PromptSession
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.completion import FuzzyWordCompleter
 
-from rich import print
-from rich.console import Console
-from rich.markdown import Markdown
-
-
 console = Console()
-HISTORY_FILE = os.path.expanduser("~/.terminal_history")
+
+HISTORY_FILE = os.path.expanduser("~/.dwarp_history")
+_OLD_HISTORY_FILE = os.path.expanduser("~/.terminal_history") # Legacy history file from older versions
+
+if os.path.exists(_OLD_HISTORY_FILE) and not os.path.exists(HISTORY_FILE):
+    os.rename(_OLD_HISTORY_FILE, HISTORY_FILE)
 
 
 def load_previous_commands():
@@ -85,7 +89,7 @@ def handle_shell_command(result: CommandResponse, current_dir: str) -> str:
         return current_dir
 
     if placeholders(final_cmd):
-        print(f"[yellow]Please edit before execution:[/yellow]")
+        print("[yellow]Please edit before execution:[/yellow]")
         final_cmd = edit_command(final_cmd)
     else:
         opt = input("Edit command before executing? [y/N]: ").strip().lower()
@@ -93,22 +97,22 @@ def handle_shell_command(result: CommandResponse, current_dir: str) -> str:
             final_cmd = edit_command(final_cmd)
 
     if check_command_safety(final_cmd):
-        print(f"\n[green]Command approved! Executing...[/green]")
+        print("\n[green]Command approved! Executing...[/green]")
         output, success = run_command(final_cmd, cwd=current_dir)
         print(output)
         if success:
             save_command(final_cmd)
         else:
-            print(f"[red]Command failed to execute[/red]")
+            print("[red]Command failed to execute[/red]")
         return current_dir
     else:
-        print(f"[blue]Command rejected by user[/blue]")
+        print("[blue]Command rejected by user[/blue]")
         return current_dir
 
 
 def handle_general_response(result: GeneralResponse):
     """Handle general query responses."""
-    print(f"\n[bold blue]Response:[/bold blue]")
+    print("\n[bold blue]Response:[/bold blue]")
 
     if "```" in result.content or "**" in result.content or "##" in result.content:
         console.print(Markdown(result.content))
@@ -124,7 +128,7 @@ def handle_general_response(result: GeneralResponse):
 
 
 def main():
-    print("[bold green]AI-Enabled Terminal[/bold green]")
+    print("[bold green]dwarp[/bold green]")
     print("Type your request (type 'exit' to quit)")
     print("Examples: 'install docker', 'what is Python?', 'write a hello world script'\n")
 
@@ -183,7 +187,7 @@ def main():
                 suggested_cmd = handle_general_response(result)
                 if suggested_cmd:
                     output, success = run_command(suggested_cmd, cwd=current_dir)
-                    print(f"\n[green]Executing suggested command...[/green]")
+                    print("\n[green]Executing suggested command...[/green]")
                     print(output)
                     if success:
                         save_command(suggested_cmd)
@@ -191,7 +195,7 @@ def main():
 
         except Exception as e:
             print(f"[red]Error generating response:[/red] {e}")
-            print(f"[yellow]Try rephrasing your request[/yellow]")
+            print("[yellow]Try rephrasing your request[/yellow]")
 
 
 if __name__ == "__main__":

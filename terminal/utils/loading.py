@@ -1,11 +1,8 @@
-import sys
 import threading
 import time
 from rich.console import Console
 from rich.spinner import Spinner
-from rich.text import Text
 from rich.live import Live
-from rich.panel import Panel
 
 console = Console()
 
