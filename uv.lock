@@ -110,7 +110,7 @@ wheels = [
 
 [[package]]
 name = "dwarp"
-version = "0.1.8"
+version = "0.1.8.1"
 source = { editable = "." }
 dependencies = [
     { name = "build" },
