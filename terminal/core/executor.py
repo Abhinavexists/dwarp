@@ -1,5 +1,5 @@
 import subprocess
-from pydantic import BaseModel
+from dataclasses import dataclass
 from enum import Enum
 from typing import Optional
 
@@ -9,12 +9,14 @@ class ResponseType(Enum):
     CODE_GENERATION = "code_generation"
     EXPLANATION = "explanation"
 
-class CommandResponse(BaseModel):
+@dataclass
+class CommandResponse:
     command: str
     explanation: str
     response_type: ResponseType = ResponseType.SHELL_COMMAND
 
-class GeneralResponse(BaseModel):
+@dataclass
+class GeneralResponse:
     content: str
     response_type: ResponseType = ResponseType.GENERAL_QUERY
     action_required: bool = False
